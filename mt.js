@@ -1,5 +1,5 @@
-// 名称: 美团秒杀时间匹配插件
-// 描述: 为美团秒杀接口匹配0,12,14,16,18点时间戳
+// 名称: mt秒杀时间匹配插件
+// 描述: 为mt秒杀接口匹配0,12,14,16,18点时间戳
 // 修改时间: 2025-11-25
 // 触发URL: https://rights-apigw.meituan.com/api/rights/activity/secKill/info
 
@@ -79,7 +79,7 @@
                 }
             });
 
-            // 检查data字段（常见于美团API）
+            // 检查data字段（常见于mtAPI）
             if (data.data && typeof data.data === 'object') {
                 timeFields.forEach(field => {
                     if (data.data[field] !== undefined) {
@@ -94,8 +94,8 @@
             modifiedBody = body;
         }
 
-        console.log(`✅ 美团秒杀时间匹配完成`);
-
+        console.log(`✅ mt秒杀时间匹配完成`);
+        $.notify('美团秒杀时间', '修改成功', `✅`);
         $done({
             body: modifiedBody
         });
@@ -108,3 +108,47 @@
         });
     }
 })();
+
+
+// 兼容 Loon 的 Env 类
+function Env() {
+    const isLoon = typeof $loon !== 'undefined';
+
+    const wrapPromise = (options, method) => {
+        return new Promise((resolve, reject) => {
+            const httpClientMethod = method === 'POST' ? $httpClient.post : (method === 'PUT' ? $httpClient.put : $httpClient.get);
+            httpClientMethod(options, (err, resp, body) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({ body, status: resp.statusCode, headers: resp.headers });
+                }
+            });
+        });
+    };
+
+    const http = {
+        get: (options) => wrapPromise(options, 'GET'),
+        post: (options) => {
+            if (typeof options.body === 'object' && options.body !== null) {
+                options.headers['Content-Type'] = 'application/json;charset=UTF-8';
+                options.body = JSON.stringify(options.body);
+            }
+            return wrapPromise(options, 'POST');
+        },
+        put: (options) => {
+            if (typeof options.body === 'object' && options.body !== null) {
+                options.headers['Content-Type'] = 'application/json;charset=UTF-8';
+                options.body = JSON.stringify(options.body);
+            }
+            return wrapPromise(options, 'PUT');
+        }
+    };
+
+    const notify = (title, subtitle = '', body = '') => isLoon ? $notification.post(title, subtitle, body) : console.log(`${title}\n${subtitle}\n${body}`);
+    const log = (msg) => console.log(msg);
+    const logErr = (e) => console.log(e.stack || e);
+    const done = (value = {}) => isLoon ? $done(value) : null;
+
+    return { http, notify, log, logErr, done };
+}

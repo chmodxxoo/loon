@@ -4,7 +4,7 @@
 #!tag=抓包
 
 [Script]
-http-response ^https:\/\/rights-apigw\.meituan\.com\/api\/rights\/activity\/secKill script-path=https://raw.githubusercontent.com/chmodxxoo/loon/refs/heads/main/mt.js, requires-body=true, timeout=10, tag=团团抢券改时间
+http-response ^https:\/\/rights-apigw\.meituan\.com\/api\/rights\/activity\/secKill/info script-path=https://raw.githubusercontent.com/chmodxxoo/loon/refs/heads/main/mt.js, requires-body=true, timeout=10, tag=团团抢券改时间
 
 
 [MITM]

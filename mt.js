@@ -1,7 +1,7 @@
 // 名称: 美团秒杀时间匹配插件
 // 描述: 为美团秒杀接口匹配0,12,14,16,18点时间戳
 // 修改时间: 2025-11-25
-// 触发URL: https://rights-apigw.meituan.com/api/rights/activity/secKill/
+// 触发URL: https://rights-apigw.meituan.com/api/rights/activity/secKill/info
 
 (function() {
     'use strict';
